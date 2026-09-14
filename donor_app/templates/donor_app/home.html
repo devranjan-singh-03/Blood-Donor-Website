@@ -1,0 +1,41 @@
+{% extends 'donor_app/base.html' %}
+{% load static %}
+
+{% block title %}Home - Blood Donor Management{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="hero">
+        <h1>Save Lives, Donate Blood</h1>
+        <p>Every blood donor is a hero. Join us in making a difference.</p>
+        <a href="{% url 'add_donor' %}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Register as Donor
+        </a>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <i class="fas fa-users fa-2x"></i>
+            <h3>{{ total_donors }}</h3>
+            <p>Total Donors</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-check-circle fa-2x"></i>
+            <h3>{{ available_donors }}</h3>
+            <p>Available Donors</p>
+        </div>
+    </div>
+
+    <div class="blood-groups">
+        <h2>Blood Group Availability</h2>
+        <div class="blood-grid">
+            {% for group, count in blood_groups.items %}
+            <div class="blood-card">
+                <div class="blood-type">{{ group }}</div>
+                <div class="blood-count">{{ count }} donors</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

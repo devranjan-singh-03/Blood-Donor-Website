@@ -1,0 +1,81 @@
+{% extends 'donor_app/base.html' %}
+{% load static %}
+
+{% block title %}Search Donors{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2><i class="fas fa-search"></i> Search Donors</h2>
+    
+    <div class="search-box">
+        <form method="GET" id="searchForm">
+            <div class="search-input-group">
+                <input type="text" name="q" id="searchInput" 
+                       placeholder="Search by name, blood group, city..." 
+                       value="{{ query }}">
+                <button type="submit"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="searchResults">
+        {% if query %}
+            <h3>Results for "{{ query }}"</h3>
+            {% if results %}
+                <div class="search-results-grid">
+                    {% for donor in results %}
+                    <div class="result-card">
+                        <div class="result-header">
+                            <h4>{{ donor.first_name }} {{ donor.last_name }}</h4>
+                            <span class="blood-group">{{ donor.blood_group }}</span>
+                        </div>
+                        <div class="result-info">
+                            <p><i class="fas fa-phone"></i> {{ donor.phone }}</p>
+                            <p><i class="fas fa-envelope"></i> {{ donor.email }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ donor.city }}</p>
+                        </div>
+                        <a href="{% url 'donor_details' donor.id %}" class="btn btn-sm btn-info">
+                            View Details
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-search fa-3x"></i>
+                    <p>No donors found matching your search.</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="search-hint">
+                <i class="fas fa-search fa-3x"></i>
+                <p>Enter a search term to find donors</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Live search
+    const searchInput = document.getElementById('searchInput');
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = this.value;
+            if (query.length > 2) {
+                fetch(`/api/search/?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update results dynamically
+                        const resultsContainer = document.getElementById('searchResults');
+                        // Update with results
+                    });
+            }
+        }, 500);
+    });
+</script>
+{% endblock %}

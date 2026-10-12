@@ -1,0 +1,152 @@
+{% extends 'donor_app/base.html' %}
+{% load static %}
+
+{% block title %}{{ donor.first_name }} {{ donor.last_name }} — Bhumi{% endblock %}
+
+{% block content %}
+
+<!-- 🩸 Page Header -->
+<div class="page-title">
+    <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="page-title-logo">
+    <h2>Donor Details</h2>
+</div>
+
+<!-- 👤 Profile Card -->
+<div class="donor-profile">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if donor.profile_picture %}
+                <img src="{{ donor.profile_picture.url }}" alt="{{ donor.first_name }}" class="avatar-logo">
+            {% else %}
+                <img src="{% static 'images/logo.jpeg' %}" alt="Donor" class="avatar-logo">
+            {% endif %}
+                <span class="blood-badge-large">{{ donor.blood_group }}</span>
+        </div>
+        <div class="profile-title">
+            <h1>{{ donor.first_name }} {{ donor.last_name }}</h1>
+            <p class="profile-subtitle">
+                <i class="fas fa-map-marker-alt"></i> {{ donor.city }}, {{ donor.state }}
+            </p>
+            <span class="status-badge {% if donor.is_available %}available{% else %}unavailable{% endif %}">
+                <i class="fas fa-circle"></i>
+                {% if donor.is_available %}Available{% else %}Not Available{% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- 📋 Info Grid -->
+    <div class="info-grid">
+
+        <!-- Personal Info -->
+        <div class="info-section">
+            <h3><i class="fas fa-user"></i> Personal Information</h3>
+            <div class="info-row">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ donor.first_name }} {{ donor.last_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ donor.date_of_birth|date:"d M Y" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Age</span>
+                <span class="info-value">{{ donor.get_age }} years</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{ donor.get_gender_display }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Blood Group</span>
+                <span class="info-value">
+                    <span class="blood-group">{{ donor.blood_group }}</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="info-section">
+            <h3><i class="fas fa-address-book"></i> Contact Information</h3>
+            <div class="info-row">
+                <span class="info-label">Phone</span>
+                <span class="info-value">
+                    <a href="tel:{{ donor.phone }}">{{ donor.phone }}</a>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">
+                    <a href="mailto:{{ donor.email }}">{{ donor.email }}</a>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ donor.address }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">City</span>
+                <span class="info-value">{{ donor.city }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">State</span>
+                <span class="info-value">{{ donor.state }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Pincode</span>
+                <span class="info-value">{{ donor.pincode }}</span>
+            </div>
+        </div>
+
+        <!-- Donation Info -->
+        <div class="info-section">
+            <h3><i class="fas fa-heartbeat"></i> Donation Information</h3>
+            <div class="info-row">
+                <span class="info-label">Status</span>
+                <span class="info-value">
+                    <span class="status-badge {% if donor.is_available %}available{% else %}unavailable{% endif %}">
+                        {% if donor.is_available %}Available{% else %}Not Available{% endif %}
+                    </span>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Last Donation</span>
+                <span class="info-value">
+                    {% if donor.last_donation_date %}
+                        {{ donor.last_donation_date|date:"d M Y" }}
+                    {% else %}
+                        <span class="text-muted">Never donated</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Registered On</span>
+                <span class="info-value">{{ donor.created_at|date:"d M Y" }}</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🔘 Action Buttons -->
+    <div class="profile-actions">
+        <a href="{% url 'edit_donor' donor.id %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Donor
+        </a>
+        <a href="{% url 'donor_list' %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+        <button onclick="printDonorDetails({{ donor.id }})" class="btn btn-outline">
+            <i class="fas fa-print"></i> Print
+        </button>
+        <button onclick="if(confirmDelete('{{ donor.first_name }} {{ donor.last_name }}')) window.location.href='{% url 'delete_donor' donor.id %}'" 
+                class="btn btn-danger">
+            <i class="fas fa-trash"></i> Delete
+        </button>
+    </div>
+
+    
+
+</div>
+
+{% endblock %}

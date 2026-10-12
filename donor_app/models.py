@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+from datetime import date
+
 class Donor(models.Model):
     BLOOD_GROUPS = [
         ('A+', 'A+'),
@@ -18,7 +20,12 @@ class Donor(models.Model):
         ('F', 'Female'),
         ('O', 'Other'),
     ]
-    
+    profile_picture = models.ImageField(
+        upload_to='donors/',
+        null=True,
+        blank=True,
+        default='donors/default.png'
+    )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
@@ -38,10 +45,20 @@ class Donor(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.blood_group}"
     
-    def get_age(self):
-        from datetime import date
-        today = date.today()
-        return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+    # def get_age(self):
+    #     from datetime import date
+    #     today = date.today()
+    #     return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
     
+
+    @property
+    def age(self):
+        if self.date_of_birth:
+            today = date.today()
+            return today.year - self.date_of_birth.year - (
+                (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
+            )
+        return None
+
     class Meta:
         ordering = ['-created_at']

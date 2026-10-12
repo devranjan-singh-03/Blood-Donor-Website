@@ -1,19 +1,25 @@
 {% extends 'donor_app/base.html' %}
 {% load static %}
 
-{% block title %}Search Donors{% endblock %}
+{% block title %}Search Donors — Bhumi{% endblock %}
 
 {% block content %}
 <div class="search-container">
-    <h2><i class="fas fa-search"></i> Search Donors</h2>
+    <div class="page-title">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="page-title-logo">
+        <h2>Search Donors</h2>
+    </div>
     
     <div class="search-box">
         <form method="GET" id="searchForm">
             <div class="search-input-group">
                 <input type="text" name="q" id="searchInput" 
                        placeholder="Search by name, blood group, city..." 
-                       value="{{ query }}">
-                <button type="submit"><i class="fas fa-search"></i> Search</button>
+                       value="{{ query }}"
+                       autocomplete="off">
+                <button type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
             </div>
         </form>
     </div>
@@ -35,47 +41,23 @@
                             <p><i class="fas fa-map-marker-alt"></i> {{ donor.city }}</p>
                         </div>
                         <a href="{% url 'donor_details' donor.id %}" class="btn btn-sm btn-info">
-                            View Details
+                            <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="no-results">
-                    <i class="fas fa-search fa-3x"></i>
-                    <p>No donors found matching your search.</p>
+                    <img src="{% static 'images/logo.png' %}" alt="No results" class="empty-logo">
+                    <p>No donors found matching "{{ query }}"</p>
                 </div>
             {% endif %}
         {% else %}
             <div class="search-hint">
-                <i class="fas fa-search fa-3x"></i>
+                <img src="{% static 'images/logo.png' %}" alt="Search" class="empty-logo">
                 <p>Enter a search term to find donors</p>
             </div>
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Live search
-    const searchInput = document.getElementById('searchInput');
-    let searchTimeout;
-    
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            const query = this.value;
-            if (query.length > 2) {
-                fetch(`/api/search/?q=${query}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Update results dynamically
-                        const resultsContainer = document.getElementById('searchResults');
-                        // Update with results
-                    });
-            }
-        }, 500);
-    });
-</script>
 {% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'donor_app/base.html' %}
+{% load static %}
+
+{% block title %}Edit Donor — Bhumi{% endblock %}
+
+{% block content %}
+
+<div class="page-title">
+    <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="page-title-logo">
+    <h2>Edit Donor</h2>
+</div>
+
+<div class="form-container">
+    <div class="form-header">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="form-header-logo">
+        <div>
+            <h2>Update: {{ donor.first_name }} {{ donor.last_name }}</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">
+                <span class="blood-group">{{ donor.blood_group }}</span>
+                &nbsp; {{ donor.city }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- ⚠️ enctype ZAROORI hai image upload ke liye -->
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-error" style="position: static; margin-bottom: 1.5rem;">
+                <i class="fas fa-exclamation-circle"></i>
+                Please fix the errors below.
+            </div>
+        {% endif %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span style="color: #e11d48;">*</span>
+                        {% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small style="color: #e11d48; font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+                            <i class="fas fa-info-circle"></i> {{ field.errors.0 }}
+                        </small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Donor
+            </button>
+            <a href="{% url 'donor_details' donor.id %}" class="btn btn-outline">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

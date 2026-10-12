@@ -3,53 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Blood Donor Management{% endblock %}</title>
+    <title>{% block title %}Bhumi Blood Donor Management{% endblock %}</title>
     {% load static %}
+
+    <!-- 🩸 Favicon -->
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpeg' %}">
+    <link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
+    
+    <!-- 📱 PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bhumi">
+    <meta name="theme-color" content="#e11d48">
+    
+    <!-- 🎨 Styles -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- 📱 PWA Manifest -->
+    <link rel="manifest" href="{% static 'manifest/manifest.json' %}">
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/js/sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW error:', err));
+            });
+        }
+    </script>
 </head>
 <body>
+
+    <!-- ============================================ NAVBAR ============================================ -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
                 <a href="{% url 'home' %}">
-                    <i class="fas fa-heartbeat"></i> Blood Donor
+                    <img src="{% static 'images/logo.jpeg' %}" alt="Bhumi Logo" class="nav-logo">
+                    <div class="nav-brand-text">
+                        <span class="nav-brand-title">Bhumi</span>
+                        <span class="nav-brand-subtitle">Blood Donor</span>
+                    </div>
                 </a>
             </div>
+
             <div class="nav-menu">
-                <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
-                <a href="{% url 'add_donor' %}"><i class="fas fa-user-plus"></i> Add Donor</a>
-                <a href="{% url 'donor_list' %}"><i class="fas fa-users"></i> Donors</a>
-                <a href="{% url 'search_donor' %}"><i class="fas fa-search"></i> Search</a>
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'add_donor' %}" class="{% if request.resolver_match.url_name == 'add_donor' %}active{% endif %}">
+                    <i class="fas fa-user-plus"></i> Add Donor
+                </a>
+                <a href="{% url 'donor_list' %}" class="{% if request.resolver_match.url_name == 'donor_list' %}active{% endif %}">
+                    <i class="fas fa-users"></i> Donors
+                </a>
+                <a href="{% url 'search_donor' %}" class="{% if request.resolver_match.url_name == 'search_donor' %}active{% endif %}">
+                    <i class="fas fa-search"></i> Search
+                </a>
             </div>
+
             <div class="nav-search">
                 <form action="{% url 'search_donor' %}" method="GET">
                     <input type="text" name="q" placeholder="Search donors...">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
+
+            <!-- 👤 Auth Buttons -->
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <span class="nav-user" title="{{ user.username }}">
+                        <i class="fas fa-user-circle"></i> {{ user.username|truncatechars:10 }}
+                    </span>
+                    <a href="{% url 'account_logout' %}" class="btn btn-sm btn-outline" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-sm btn-outline">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'account_signup' %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-user-plus"></i> Signup
+                    </a>
+                {% endif %}
+            </div>
+
+            <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </nav>
 
+    <!-- ============================================ MAIN CONTENT ============================================ -->
     <main>
         {% if messages %}
-            <div class="messages">
+            <div class="messages" style="display: none;">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
+                    <div class="alert alert-{{ message.tags }}" data-message="{{ message }}"></div>
                 {% endfor %}
             </div>
         {% endif %}
-        
-        {% block content %}
-        {% endblock %}
+
+        {% block content %}{% endblock %}
     </main>
 
+    <!-- ============================================ FOOTER ============================================ -->
     <footer>
-        <p>&copy; 2024 Blood Donor Management System</p>
+        <div class="footer-content">
+            <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="footer-logo">
+            <span class="footer-brand">Bhumi Blood Donor</span>
+            <span>&copy; 2026 • All rights reserved</span>
+        </div>
+
+        <!-- 🌐 Social Icons -->
+        <div class="footer-social">
+            <a href="https://www.facebook.com/devranjan.singh.33" target="_blank" rel="noopener" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/_deo.ranjan_singh" target="_blank" rel="noopener" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/919771326619" target="_blank" rel="noopener" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <button id="backToTop" title="Back to top" aria-label="Back to top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
     </footer>
 
+    <!-- ============================================ SCRIPTS ============================================ -->
+    <!-- 🔔 Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+    
     <script src="{% static 'js/script.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

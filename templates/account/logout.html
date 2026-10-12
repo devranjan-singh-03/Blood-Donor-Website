@@ -1,0 +1,17 @@
+{% extends 'donor_app/base.html' %}
+
+{% block title %}Logout — Bhumi{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 400px; margin: 3rem auto; text-align: center;">
+    <h2>Logout?</h2>
+    <p>Are you sure you want to logout?</p>
+    <form method="POST" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <div class="form-actions" style="justify-content: center;">
+            <button type="submit" class="btn btn-danger">Yes, Logout</button>
+            <a href="{% url 'home' %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

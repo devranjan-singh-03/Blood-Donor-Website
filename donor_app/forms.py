@@ -6,6 +6,7 @@ class DonorForm(forms.ModelForm):
     class Meta:
         model = Donor
         fields = [
+            'profile_picture',
             'first_name', 'last_name', 'date_of_birth', 'gender',
             'blood_group', 'email', 'phone', 'address', 'city',
             'state', 'pincode', 'is_available', 'last_donation_date'

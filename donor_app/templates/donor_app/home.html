@@ -1,41 +1,52 @@
 {% extends 'donor_app/base.html' %}
 {% load static %}
 
-{% block title %}Home - Blood Donor Management{% endblock %}
+{% block title %}Home — Bhumi Blood Donor{% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <div class="hero">
-        <h1>Save Lives, Donate Blood</h1>
-        <p>Every blood donor is a hero. Join us in making a difference.</p>
+
+<!-- 🩸 HERO -->
+<section class="hero">
+    <div class="hero-logo-wrapper">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Bhumi Blood Donor" class="hero-logo">
+    </div>
+    <h1>Save Lives with <span>Bhumi</span></h1>
+    <p>Connecting blood donors with those in need. Every drop counts, every donor is a hero.</p>
+    <div class="hero-actions">
         <a href="{% url 'add_donor' %}" class="btn btn-primary">
-            <i class="fas fa-plus-circle"></i> Register as Donor
+            <i class="fas fa-user-plus"></i> Become a Donor
+        </a>
+        <a href="{% url 'donor_list' %}" class="btn btn-outline">
+            <i class="fas fa-users"></i> View Donors
         </a>
     </div>
+</section>
 
-    <div class="stats-container">
-        <div class="stat-card">
-            <i class="fas fa-users fa-2x"></i>
-            <h3>{{ total_donors }}</h3>
-            <p>Total Donors</p>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-check-circle fa-2x"></i>
-            <h3>{{ available_donors }}</h3>
-            <p>Available Donors</p>
-        </div>
+<!-- 📊 STATS -->
+<div class="stats-container">
+    <div class="stat-card">
+        <h3>{{ total_donors }}</h3>
+        <p>Total Donors</p>
     </div>
-
-    <div class="blood-groups">
-        <h2>Blood Group Availability</h2>
-        <div class="blood-grid">
-            {% for group, count in blood_groups.items %}
-            <div class="blood-card">
-                <div class="blood-type">{{ group }}</div>
-                <div class="blood-count">{{ count }} donors</div>
-            </div>
-            {% endfor %}
-        </div>
+    <div class="stat-card">
+        <h3>{{ available_donors }}</h3>
+        <p>Available Now</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ blood_groups|length }}</h3>
+        <p>Blood Groups</p>
     </div>
 </div>
+
+<!-- 🩸 BLOOD GROUPS -->
+<h2>Blood Groups</h2>
+<div class="blood-grid">
+    {% for bg, count in blood_groups.items %}
+    <div class="blood-card">
+        <div class="blood-type">{{ bg }}</div>
+        <div class="blood-count">{{ count }} donors</div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

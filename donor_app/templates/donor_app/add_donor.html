@@ -1,78 +1,57 @@
 {% extends 'donor_app/base.html' %}
 {% load static %}
 
-{% block title %}Add Donor{% endblock %}
+{% block title %}Add Donor — Bhumi{% endblock %}
 
 {% block content %}
+
+<div class="page-title">
+    <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="page-title-logo">
+    <h2>Add New Donor</h2>
+</div>
+
 <div class="form-container">
-    <h2><i class="fas fa-user-plus"></i> Add New Donor</h2>
-    <form method="POST" class="donor-form" id="addDonorForm">
+    <div class="form-header">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="form-header-logo">
+        <h2>Register a Donor</h2>
+    </div>
+    
+    <!-- ⚠️ enctype ZAROORI hai image upload ke liye -->
+    <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         
+        {% if form.errors %}
+            <div class="alert alert-error" style="position: static; margin-bottom: 1.5rem;">
+                <i class="fas fa-exclamation-circle"></i> Please fix the errors below.
+            </div>
+        {% endif %}
+        
         <div class="form-grid">
-            <div class="form-group">
-                <label>First Name</label>
-                {{ form.first_name }}
-                <span class="error" id="firstNameError"></span>
-            </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                {{ form.last_name }}
-            </div>
-            <div class="form-group">
-                <label>Date of Birth</label>
-                {{ form.date_of_birth }}
-            </div>
-            <div class="form-group">
-                <label>Gender</label>
-                {{ form.gender }}
-            </div>
-            <div class="form-group">
-                <label>Blood Group</label>
-                {{ form.blood_group }}
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                {{ form.email }}
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                {{ form.phone }}
-            </div>
-            <div class="form-group full-width">
-                <label>Address</label>
-                {{ form.address }}
-            </div>
-            <div class="form-group">
-                <label>City</label>
-                {{ form.city }}
-            </div>
-            <div class="form-group">
-                <label>State</label>
-                {{ form.state }}
-            </div>
-            <div class="form-group">
-                <label>Pincode</label>
-                {{ form.pincode }}
-            </div>
-            <div class="form-group">
-                <label>Available</label>
-                {{ form.is_available }}
-            </div>
-            <div class="form-group">
-                <label>Last Donation Date</label>
-                {{ form.last_donation_date }}
-            </div>
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}<span style="color: #e11d48;">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small style="color: #e11d48; font-size: 0.8rem; display: block; margin-top: 0.25rem;">
+                            {{ field.errors.0 }}
+                        </small>
+                    {% endif %}
+                </div>
+            {% endfor %}
         </div>
         
         <div class="form-actions">
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Donor
             </button>
-            <a href="{% url 'donor_list' %}" class="btn btn-secondary">
+            <a href="{% url 'donor_list' %}" class="btn btn-outline">
                 <i class="fas fa-times"></i> Cancel
             </a>
         </div>
     </form>
 </div>
+
 {% endblock %}
